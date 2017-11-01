@@ -1,20 +1,20 @@
 EbuildyBump
 ======================
 
-Integration of the [**bump**](http://github.com/ebuildy/bump) library
+Integration of the [**bump**](https://github.com/subitolabs/bump-bundle) library
 into Symfony.
 
 Installation
 ------------
 
-Require [`ebuildy/bump`](https://packagist.org/packages/ebuildy/bump)
+Require [`subitolabs/bump-bundle`](https://packagist.org/packages/subitolabs/bump-bundle)
 to your `composer.json` file:
 
 
 ```json
 {
     "require": {
-        "ebuildy/bump": "~1.0"
+        "subitolabs/bump-bundle": "~1.0"
     }
 }
 ```
@@ -25,28 +25,63 @@ Register the bundle in `app/AppKernel.php`:
 // app/AppKernel.php
 public function registerBundles()
 {
-    return array(
-        // ...
-        new Ebuildy\BumpBundle\EbuildyBumpBundle()
-    );
+    $bundles[] = new Subitolabs\Bundle\BumpBundle\SubitolabsBumpBundle();
 }
 ```
 
 Console Command
 ---------------
 
-A Symfony console command is provided in this bundle
+### bump
 
 ```
-$ bin/console ebuildy:bump
+Usage:
+  subitolabs:bump [options] [--] <env> [<position>]
 
-Options available:
+Arguments:
+  env                          Environment
+  position                     Position to increment: 0=nothing(default), 1=MAJOR, 2=MINOR, 3=PATCH [default: 0]
 
- --consumer             Which consumer should we use ? (default: "default")
- --iteration-limit (-i) Limit of iterations, -1 for infinite.. (default: -1)
- --time-limit           During how many time this command will listen to the queue. (default: 60)
- --usleep               Micro seconds (default: 100000)
- --lock                 Only one command processing ?
+Options:
+      --dry-run                Set to not alter data and git something
+      --message[=MESSAGE]      Tag message [default: "Bump to {{tag}} with Subitolabs bump bundle"]
+      --tag[=TAG]              How tag is made [default: "{{env}}-{{version}}"]
+      --file[=FILE]            File to write version info (JSON encoded) [default: "./app/config/version.yml"]
+      --changelog[=CHANGELOG]  CHANGELOG.md path [default: "./CHANGELOG.md"]
+  -h, --help                   Display this help message
+  -q, --quiet                  Do not output any message
+  -V, --version                Display this application version
+      --ansi                   Force ANSI output
+      --no-ansi                Disable ANSI output
+  -n, --no-interaction         Do not ask any interactive question
+  -e, --env=ENV                The environment name [default: "dev"]
+      --no-debug               Switches off debug mode
+  -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+Help:
+  Bump version according semantic versioning (http://semver.org/) - create git tag.
+```
+
+### changelog
+
+```
+Usage:
+  subitolabs:changelog [options]
+
+Options:
+      --changelog[=CHANGELOG]  CHANGELOG.md path [default: "./CHANGELOG.md"]
+  -h, --help                   Display this help message
+  -q, --quiet                  Do not output any message
+  -V, --version                Display this application version
+      --ansi                   Force ANSI output
+      --no-ansi                Disable ANSI output
+  -n, --no-interaction         Do not ask any interactive question
+  -e, --env=ENV                The environment name [default: "dev"]
+      --no-debug               Switches off debug mode
+  -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+Help:
+  Write full changelog based on git tags and git logs.
 ```
 
 Configuration
