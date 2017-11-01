@@ -1,0 +1,23 @@
+{
+  "name": "subitolabs/bump-bundle",
+  "type": "symfony-bundle",
+  "description": "manage project version, changelog and deploy tag in a git project.",
+  "keywords": ["command", "git", "ci", "cd", "version", "bump", "bundle"],
+  "license": "MIT",
+  "homepage": "https://github.com/subitolabs/bump-bundle",
+  "authors": [{
+    "name": "Contributor Guys",
+    "homepage": "https://github.com/subitolabs/bump-bundle/contributors"
+  }],
+  "require": {
+    "php": ">=5.5.0",
+    "symfony/console": "~2.5|~3.0|~4.0",
+    "symfony/yaml": "~2.5|~3.0|~4.0",
+    "symfony/framework-bundle": "~3",
+    "symfony/process": "^3.3"
+  },
+  "autoload": {
+    "psr-4": { "Subitolabs\\Bundle\\BumpBundle\\": "src" }
+  },
+  "minimum-stability": "dev"
+}
