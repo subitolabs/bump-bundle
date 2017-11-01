@@ -1,8 +1,7 @@
-EbuildyBump
+SubitolabsBumpBundle
 ======================
 
-Integration of the [**bump**](https://github.com/subitolabs/bump-bundle) library
-into Symfony.
+Symfony bundle to deal with project (git) versioning and changelog. Respect semantic versioning.
 
 Installation
 ------------
