@@ -79,7 +79,6 @@ class BumpCommand extends ContainerAwareCommand
         $listTagCommand = 'git tag -l --format=\'{"date":"%(taggerdate:iso8601)","tag":"%(refname:short)"},\' | sed "$ s/,$//" | sed \':a;N;$!ba;s/\r\n\([^{]\)/\\n\1/g\'| awk \'BEGIN { print("[") } { print($0) } END { print("]") }\'';
         $command = 'git log --pretty=format:\'{%n  "commit": "%H",%n  "abbreviated_commit": "%h",%n  "tree": "%T",%n  "abbreviated_tree": "%t",%n  "parent": "%P",%n  "abbreviated_parent": "%p",%n  "refs": "%D",%n  "encoding": "%e",%n  "subject": "%s",%n  "sanitized_subject_line": "%f",%n  "body": "%b",%n  "commit_notes": "%N",%n  "verification_flag": "%G?",%n  "signer": "%GS",%n  "signer_key": "%GK",%n  "author": {%n    "name": "%aN",%n    "email": "%aE",%n    "date": "%aD"%n  },%n  "commiter": {%n    "name": "%cN",%n    "email": "%cE",%n    "date": "%cD"%n  }%n},\' ' . $fromTag . '..HEAD | sed "$ s/,$//" | sed \':a;N;$!ba;s/\r\n\([^{]\)/\\n\1/g\'| awk \'BEGIN { print("[") } { print($0) } END { print("]") }\'';
 
-
         $process = new Process($command);
 
         $process->run();
@@ -104,16 +103,18 @@ class BumpCommand extends ContainerAwareCommand
     }
 
     protected function execGitCommands($dataFile, $changeLogFile, $version, $message, $tag) {
-        $this->execShell(sprintf('git commit %s -m "Bump version to %s"', $dataFile . ' ' . (file_exists($changeLogFile) ? $changeLogFile : ''), $version));
-        $this->execShell(sprintf('git tag -am "%s" %s', $message, $tag));
-        $this->execShell(sprintf('git push origin %s', $tag));
-    }
+        foreach([
+            sprintf('git commit %s -m "Bump version to %s"', $dataFile . ' ' . (file_exists($changeLogFile) ? $changeLogFile : ''), $version),
+            sprintf('git tag -am "%s" %s', $message, $tag),
+            sprintf('git push origin %s', $tag)
+        ] as $command) {
+            $this->output->writeln(' > ' . $command, OutputInterface::VERBOSITY_VERBOSE);
 
-    protected function execShell($command) {
-        $this->output->writeln(sprintf('Execute "%s"', $command), OutputInterface::VERBOSITY_VERY_VERBOSE);
+            $p = new Process($command);
 
-        if (!$this->dryRun) {
-            exec($command);
+            $p->mustRun();
+
+            $this->output->writeln($p->getOutput(), OutputInterface::VERBOSITY_VERBOSE);
         }
     }
 
